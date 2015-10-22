@@ -1,21 +1,27 @@
 <?php
+App::uses('HttpSocket', 'Network/Http');
 class ReCaptcha {
-	public $apiUrl = 'https://www.google.com/recaptcha/api/siteverify';
-	private $privateKey;
+	public static $apiUrl = 'https://www.google.com/recaptcha/api/siteverify';
+	private static $results = [];
 
-	protected function _getApiResponse($challenge, $response, $ip = null) {
-		if (empty($ip)) {
-			$ip = env('REMOTE_ADDR');
+	public static function verify($response, $ip = null) {
+		if (isset(self::$results[$response])) {
+			// A response token can only be checked once, so in case of repeat checks in the code we store the result from the request
+			$result = self::$results[$response];
+		} else {
+			if (empty($ip)) {
+				$ip = env('REMOTE_ADDR');
+			}
+			$Socket = new HttpSocket();
+			$site_secret = Configure::read('ReCaptcha.site_secret');
+			$result = $Socket->post(self::$apiUrl, array(
+				'secret' => $site_secret,
+				'remoteip' => $ip,
+				'response' => $response,
+			));
+			self::$results[$response] = $result;
 		}
-		$Socket = new HttpSocket();
-		$site_secret = Configure::read('ReCaptcha.site_secret');
-		return $Socket->post($this->apiUrl, array(
-			'privatekey' => $site_secret,
-			'remoteip' => $ip,
-			'challenge' => $challenge,
-			//$this->Controller->request->data['recaptcha_challenge_field'],
-			'response' => $response,
-			//$this->Controller->request->data['recaptcha_response_field']
-		));
+		$parsed = json_decode($result, true);
+		return $parsed['success'] == true;
 	}
 }
