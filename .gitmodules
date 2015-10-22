@@ -1,0 +1,3 @@
+[submodule "Vendor/recaptcha-secure-token"]
+	path = Vendor/recaptcha-secure-token
+	url = git@github.com:slushie/recaptcha-secure-token.git
