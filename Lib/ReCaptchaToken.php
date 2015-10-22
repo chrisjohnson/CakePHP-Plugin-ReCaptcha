@@ -16,6 +16,7 @@ class ReCaptchaToken {
 		if (empty($sessionId)) {
 			$sessionId = uniqid('recaptcha-session');
 		}
-		return self::client()->secureToken($sessionId);
+		$timestamp = round(microtime(true) * 1000) - (30 * 1000); // Timestamp from 30 seconds ago, in case of local server time being ahead of google time (ugh.)
+		return self::client()->secureToken($sessionId, $timestamp);
 	}
 }
