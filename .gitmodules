@@ -1,3 +1,6 @@
 [submodule "Vendor/recaptcha-secure-token"]
 	path = Vendor/recaptcha-secure-token
 	url = git@github.com:slushie/recaptcha-secure-token.git
+[submodule "Vendor/ntp"]
+	path = Vendor/ntp
+	url = git@github.com:bt51/ntp.git
