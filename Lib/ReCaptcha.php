@@ -3,6 +3,7 @@ App::uses('HttpSocket', 'Network/Http');
 class ReCaptcha {
 	public static $apiUrl = 'https://www.google.com/recaptcha/api/siteverify';
 	private static $results = [];
+	private static $lastResponse = null;
 
 	public static function verify($response, $ip = null) {
 		if (isset(self::$results[$response])) {
@@ -19,6 +20,7 @@ class ReCaptcha {
 				'remoteip' => $ip,
 				'response' => $response,
 			));
+			self::$lastResponse = $result;
 			self::$results[$response] = $result;
 		}
 		$parsed = json_decode($result, true);

@@ -10,7 +10,11 @@ class ReCaptchaComponent extends Component {
 
 	public function verify() {
 		if (isset($this->Controller->request->data['g-recaptcha-response'])) {
-			return ReCaptcha::verify($this->Controller->request->data['g-recaptcha-response']);
+			$result = ReCaptcha::verify($this->Controller->request->data['g-recaptcha-response']);
+			if (!$result) {
+				$this->error = 'Invalid recaptcha';
+			}
+			return $result;
 		}
 		$this->error = 'Missing recaptcha response';
 		return false;
