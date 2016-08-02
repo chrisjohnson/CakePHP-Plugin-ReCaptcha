@@ -12,7 +12,18 @@ class ReCaptchaHelper extends Helper {
 		$secure_token = $secureToken ? sprintf('data-stoken="%s"', ReCaptchaToken::secureToken()) : '';
 		if (!self::$includedScript) {
 			self::$includedScript = true;
-			$script = '<script src="https://www.google.com/recaptcha/api.js" async defer></script>';
+			$script = '<script src="https://www.google.com/recaptcha/api.js?onload=captchaCallBack&render=explicit" async defer></script>';
+			$script .= '
+				<script>
+					var captchaCallBack = function(){
+					    $(".g-recaptcha").each(function(index, el){
+					        grecaptcha.render(el, {
+					            "sitekey" : "' . $site_key . '"
+					        });
+					    });
+					};
+				</script>
+			';
 		} else {
 			$script = '';
 		}
