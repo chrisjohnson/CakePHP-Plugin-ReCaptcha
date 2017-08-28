@@ -5,7 +5,7 @@ class ReCaptcha {
 	private static $results = [];
 	private static $lastResponse = null;
 
-	public static function verify($response, $ip = null) {
+	public static function verify($response, $ip = null, $hostname = null) {
 		if (isset(self::$results[$response])) {
 			// A response token can only be checked once, so in case of repeat checks in the code we store the result from the request
 			$result = self::$results[$response];
@@ -24,6 +24,18 @@ class ReCaptcha {
 			self::$results[$response] = $result;
 		}
 		$parsed = json_decode($result, true);
-		return $parsed['success'] == true;
+		// Verify Google's response
+		if ($parsed['success']) {
+			// Also verify the hostname if we have it
+			if (!empty($hostname)) {
+				if (strtolower($hostname) == strtolower($parsed['hostname'])) {
+					return true;
+				}
+			} else {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

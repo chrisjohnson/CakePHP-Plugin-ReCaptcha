@@ -9,7 +9,6 @@ class ReCaptchaHelper extends Helper {
 			return 'ReCaptcha Not Configured';
 		}
 		// Use Secure Token setup
-		$secure_token = $secureToken ? sprintf('data-stoken="%s"', ReCaptchaToken::secureToken()) : '';
 		if (!self::$includedScript) {
 			self::$includedScript = true;
 			$script = '<script src="https://www.google.com/recaptcha/api.js?onload=captchaCallBack&render=explicit" async defer></script>';
@@ -27,6 +26,6 @@ class ReCaptchaHelper extends Helper {
 		} else {
 			$script = '';
 		}
-		return sprintf('<div class="g-recaptcha" data-sitekey="%s" %s></div>%s', $site_key, $secure_token, $script);
+		return sprintf('<div class="g-recaptcha" data-sitekey="%s"></div>%s', $site_key, $script);
 	}
 }
